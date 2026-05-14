@@ -12,7 +12,8 @@ void onPDMdata() {
   PDM.read(sampleBuffer, bytesAvailable);
   samplesRead = bytesAvailable / 2;
 }
-
+float dB=0.0;
+int ambient,r,g,b,proximity=0;
 // ================= FILTER VARIABLES =================
 
 // Low-pass filter coefficient
@@ -81,15 +82,6 @@ void loop() {
     if (abs(fax) < 0.02) fax = 0;
     if (abs(fay) < 0.02) fay = 0;
     if (abs(faz) < 0.02) faz = 0;
-
-    Serial.print("AX:");
-    Serial.println(fax);
-
-    Serial.print("AY:");
-    Serial.println(fay);
-
-    Serial.print("AZ:");
-    Serial.println(faz);
   }
 
   // ================= Gyroscope =================
@@ -106,64 +98,31 @@ void loop() {
     if (abs(fgx) < gyroThreshold) fgx = 0;
     if (abs(fgy) < gyroThreshold) fgy = 0;
     if (abs(fgz) < gyroThreshold) fgz = 0;
-
-    Serial.print("GX:");
-    Serial.println(fgx);
-
-    Serial.print("GY:");
-    Serial.println(fgy);
-
-    Serial.print("GZ:");
-    Serial.println(fgz);
   }
 
   // ================= Magnetometer =================
   if (IMU.magneticFieldAvailable()) {
     IMU.readMagneticField(mx, my, mz);
-
-    Serial.print("MX:"); Serial.println(mx);
-    Serial.print("MY:"); Serial.println(my);
-    Serial.print("MZ:"); Serial.println(mz);
   }
 
   // ================= Temperature =================
   float temperature = HS300x.readTemperature();
-  Serial.print("TEMP:");
-  Serial.println(temperature);
 
   // ================= Humidity =================
   float humidity = HS300x.readHumidity();
-  Serial.print("HUM:");
-  Serial.println(humidity);
-
   // ================= Pressure =================
   float pressure = BARO.readPressure();
-  Serial.print("PRESS:");
-  Serial.println(pressure);
 
   // ================= Light =================
   if (APDS.colorAvailable()) {
 
-    int r, g, b, ambient;
     APDS.readColor(r, g, b, ambient);
-
-    Serial.print("LIGHT:");
-    Serial.println(ambient);
-
-    Serial.print("R:");
-    Serial.println(r);
-
-    Serial.print("G:");
-    Serial.println(g);
-
-    Serial.print("B:");
-    Serial.println(b);
   }
 
   // ================= Proximity =================
   if (APDS.proximityAvailable()) {
 
-    int proximity = APDS.readProximity();
+    proximity = APDS.readProximity();
 
     Serial.print("PROX:");
     Serial.println(proximity);
@@ -189,13 +148,64 @@ void loop() {
 
     // Approximate dB conversion
     // Tuned so quiet room ≈ 48 dB
-    float dB = 20.0 * log10(rms) - 25;
-
-    Serial.print("SOUND:");
-    Serial.println(dB);
+    dB = 20.0 * log10(rms) - 25;
 
     samplesRead = 0;
   }
+  Serial.print("GX:");
+  Serial.print(fgx);
+
+  Serial.print(",GY:");
+  Serial.print(fgy);
+
+  Serial.print(",GZ:");
+  Serial.print(fgy);
+
+  Serial.print(",AX:");
+  Serial.print(fax);
+
+  Serial.print(",AY:");
+  Serial.print(fay);
+
+  Serial.print(",AZ:");
+  Serial.print(faz);
+
+  Serial.print(",MX:");
+  Serial.print(mx);
+
+  Serial.print(",MY:");
+  Serial.print(my);
+
+  Serial.print(",MZ:");
+  Serial.print(mz);
+
+  Serial.print(",TEMP:");
+  Serial.print(temperature);
+
+  Serial.print(",HUM:");
+  Serial.print(humidity);
+
+  Serial.print(",PRESS:");
+  Serial.print(pressure);
+
+  Serial.print(",SOUND:");
+  Serial.println(dB);
+  /*
+  Serial.print("LIGHT:");
+  Serial.println(ambient);
+
+  Serial.print("R:");
+  Serial.println(r);
+
+  Serial.print("G:");
+  Serial.println(g);
+
+  Serial.print("B:");
+  Serial.println(b);
+
+  Serial.print("PROX:");
+  Serial.println(proximity);
+  */
 
   Serial.println("END");
 
