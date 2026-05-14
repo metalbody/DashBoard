@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+  <title>Magnetometer</title>
+
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+
+</head>
+
+<body>
+
+<h1>Magnetometer</h1>
+
+<canvas id="magChart"></canvas>
+
+<script>
+
+const socket = io();
+
+const maxPoints = 100;
+
+const magChart = new Chart(
+  document.getElementById('magChart'),
+  {
+    type: 'line',
+    data: {
+      labels: [],
+      datasets: [
+        {
+          label: 'MX',
+          data: []
+        },
+        {
+          label: 'MY',
+          data: []
+        },
+        {
+          label: 'MZ',
+          data: []
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      animation: false
+    }
+  }
+);
+
+socket.on('sensorData', (data) => {
+
+  if (
+    data.MX !== undefined &&
+    data.MY !== undefined &&
+    data.MZ !== undefined
+  ) {
+
+    if (magChart.data.labels.length > maxPoints) {
+
+      magChart.data.labels.shift();
+
+      magChart.data.datasets.forEach(ds => ds.data.shift());
+    }
+
+    magChart.data.labels.push('');
+
+    magChart.data.datasets[0].data.push(data.MX);
+    magChart.data.datasets[1].data.push(data.MY);
+    magChart.data.datasets[2].data.push(data.MZ);
+
+    magChart.update();
+  }
+
+});
+
+</script>
+
+</body>
+</html>

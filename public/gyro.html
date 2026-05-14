@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Accelerometer Graph</title>
+
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+</head>
+
+<body style="background:#111;color:white;">
+
+<h1>Accelerometer</h1>
+
+<canvas id="chart"></canvas>
+
+<script>
+
+const socket = io();
+
+const ctx = document.getElementById('chart');
+
+const chart = new Chart(ctx, {
+  type: 'line',
+  data: {
+    labels: [],
+    datasets: [
+      { label: 'GX', data: [] },
+      { label: 'GY', data: [] },
+      { label: 'GZ', data: [] }
+    ]
+  },
+  options: {
+    animation: false,
+    responsive: true
+  }
+});
+
+const maxPoints = 100;
+
+socket.on('sensorData', (data) => {
+
+  if (chart.data.labels.length > maxPoints) {
+    chart.data.labels.shift();
+
+    chart.data.datasets.forEach(ds => ds.data.shift());
+  }
+
+  chart.data.labels.push('');
+
+  chart.data.datasets[0].data.push(data.GX || 0);
+  chart.data.datasets[1].data.push(data.GY || 0);
+  chart.data.datasets[2].data.push(data.GZ || 0);
+
+  chart.update();
+});
+
+</script>
+
+</body>
+</html>

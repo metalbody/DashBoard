@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+  <title>Sound Sensor</title>
+
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+
+</head>
+
+<body>
+
+<h1>Sound Level</h1>
+
+<canvas id="soundChart"></canvas>
+
+<script>
+
+const socket = io();
+
+const maxPoints = 100;
+
+const soundChart = new Chart(
+  document.getElementById('soundChart'),
+  {
+    type: 'line',
+    data: {
+      labels: [],
+      datasets: [
+        {
+          label: 'Sound Level',
+          data: []
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      animation: false
+    }
+  }
+);
+
+socket.on('sensorData', (data) => {
+
+  if (data.SOUND !== undefined) {
+
+    if (soundChart.data.labels.length > maxPoints) {
+      soundChart.data.labels.shift();
+      soundChart.data.datasets[0].data.shift();
+    }
+
+    soundChart.data.labels.push('');
+
+    soundChart.data.datasets[0].data.push(data.SOUND);
+
+    soundChart.update();
+  }
+
+});
+
+</script>
+
+</body>
+</html>

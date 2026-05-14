@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Home Monitoring Dashboard</title>
+
+  <link rel="stylesheet" href="style.css">
+  <script src="/socket.io/socket.io.js"></script>
+
+</head>
+
+<body>
+
+<h1>Home Monitoring Dashboard</h1>
+
+<div id="status" class="status disconnected">
+  DISCONNECTED
+</div>
+
+<div class="grid">
+
+  <div class="card">
+    <h3>Temperature</h3>
+    <div class="value" id="TEMP">0 °C</div>
+  </div>
+
+  <div class="card">
+    <h3>Humidity</h3>
+    <div class="value" id="HUM">0 %</div>
+  </div>
+
+  <div class="card">
+    <h3>Pressure</h3>
+    <div class="value" id="PRESS">0 kPa</div>
+  </div>
+
+  <div class="card">
+    <h3>Sound</h3>
+    <div class="value" id="SOUND">0</div>
+  </div>
+
+  <div class="card">
+    <h3>Acceleration X</h3>
+    <div class="value" id="AX">0 g</div>
+  </div>
+
+    <div class="card">
+    <h3>Acceleration Y</h3>
+    <div class="value" id="AY">0 g</div>
+  </div>
+
+  <div class="card">
+    <h3>Acceleration Z</h3>
+    <div class="value" id="AZ">0 g</div>
+  </div>
+
+  <div class="card">
+    <h3>Gyroscope X</h3>
+    <div class="value" id="GX">0 dps</div>
+  </div>
+
+  <div class="card">
+    <h3>Gyroscope Y</h3>
+    <div class="value" id="GY">0 dps</div>
+  </div>
+  
+  <div class="card">
+    <h3>Gyroscope Z</h3>
+    <div class="value" id="GZ">0 dps</div>
+  </div>
+
+</div>
+
+<div class="nav">
+
+  <a href="/accel.html">Accelerometer Graphs</a>
+
+  <a href="/gyro.html">Gyroscope Graphs</a>
+
+  <a href="/env.html">Environment Graphs</a>
+
+  <a href="/sound.html">Sound Graph</a>
+
+  <a href="/mag.html">Magnetometer</a>
+
+</div>
+
+<script>
+
+const socket = io();
+
+const statusDiv = document.getElementById('status');
+
+socket.on('connect', () => {
+
+  statusDiv.innerText = 'CONNECTED';
+  statusDiv.className = 'status connected';
+
+});
+
+socket.on('disconnect', () => {
+
+  statusDiv.innerText = 'DISCONNECTED';
+  statusDiv.className = 'status disconnected';
+
+});
+
+socket.on('sensorData', (data) => {
+
+  if (data.TEMP !== undefined)
+    document.getElementById('TEMP').innerText =
+      data.TEMP.toFixed(2) + ' °C';
+
+  if (data.HUM !== undefined)
+    document.getElementById('HUM').innerText =
+      data.HUM.toFixed(2) + ' %';
+
+  if (data.PRESS !== undefined)
+    document.getElementById('PRESS').innerText =
+      data.PRESS.toFixed(2) + ' kPa';
+
+  if (data.SOUND !== undefined)
+    document.getElementById('SOUND').innerText =
+      data.SOUND.toFixed(2);
+
+  if (data.AX !== undefined)
+    document.getElementById('AX').innerText =
+      data.AX.toFixed(2) + ' g';
+
+  if (data.AY !== undefined)
+    document.getElementById('AY').innerText =
+      data.AY.toFixed(2) + ' g';
+
+  if (data.AZ !== undefined)
+    document.getElementById('AZ').innerText =
+      data.AZ.toFixed(2) + ' g';
+
+  if (data.GX !== undefined)
+    document.getElementById('GX').innerText =
+      data.GX.toFixed(2) + ' dps';
+
+  if (data.GY !== undefined)
+    document.getElementById('GY').innerText =
+      data.GY.toFixed(2) + ' dps';
+
+  if (data.GZ !== undefined)
+    document.getElementById('GZ').innerText =
+      data.GZ.toFixed(2) + ' dps';
+
+});
+
+</script>
+
+</body>
+</html>
