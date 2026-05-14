@@ -123,9 +123,6 @@ void loop() {
   if (APDS.proximityAvailable()) {
 
     proximity = APDS.readProximity();
-
-    Serial.print("PROX:");
-    Serial.println(proximity);
   }
 
   // ================= Sound =================
@@ -159,7 +156,7 @@ void loop() {
   Serial.print(fgy);
 
   Serial.print(",GZ:");
-  Serial.print(fgy);
+  Serial.print(fgz);
 
   Serial.print(",AX:");
   Serial.print(fax);
@@ -205,9 +202,10 @@ void loop() {
 
   Serial.print("PROX:");
   Serial.println(proximity);
-  */
+  
 
   Serial.println("END");
+  */
 
   delay(500);
 }

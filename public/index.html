@@ -121,7 +121,7 @@ socket.on('sensorData', (data) => {
 
   if (data.SOUND !== undefined)
     document.getElementById('SOUND').innerText =
-      data.SOUND.toFixed(2);
+      data.SOUND.toFixed(2) + ' dB';
 
   if (data.AX !== undefined)
     document.getElementById('AX').innerText =
